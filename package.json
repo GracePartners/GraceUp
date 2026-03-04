@@ -1,0 +1,10 @@
+{
+  "name": "graceup",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"dev script placeholder\"",
+    "lint": "echo \"lint placeholder\"",
+    "test": "echo \"test placeholder\""
+  }
+}
