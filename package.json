@@ -2,9 +2,13 @@
   "name": "graceup",
   "version": "0.1.0",
   "private": true,
+  "workspaces": ["backend", "frontend"],
   "scripts": {
-    "dev": "echo \"dev script placeholder\"",
-    "lint": "echo \"lint placeholder\"",
-    "test": "echo \"test placeholder\""
+    "dev": "npm run dev:frontend",
+    "dev:backend": "npm run start:dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "build": "npm run build -w backend && npm run build -w frontend",
+    "lint": "npm run lint -w backend && npm run lint -w frontend",
+    "test": "npm run test -w backend"
   }
 }

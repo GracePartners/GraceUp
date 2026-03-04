@@ -1,0 +1,2 @@
+-- Core hierarchy schema:
+-- Workspace -> Spaces -> Projects -> Lists -> Tasks.

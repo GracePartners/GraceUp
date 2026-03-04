@@ -1,0 +1,2 @@
+-- PostgreSQL extensions required by GraceUp CRM.
+-- Add CREATE EXTENSION statements in the first migration when needed.

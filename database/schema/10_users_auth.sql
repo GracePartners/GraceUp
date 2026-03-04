@@ -1,0 +1,2 @@
+-- Users and authentication base schema.
+-- Example domains: users, identities, sessions, refresh tokens.

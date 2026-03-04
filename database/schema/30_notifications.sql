@@ -1,0 +1,2 @@
+-- Notifications schema.
+-- Example domains: notifications, preferences, delivery, read states.
