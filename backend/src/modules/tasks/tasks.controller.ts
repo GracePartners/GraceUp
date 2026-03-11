@@ -9,34 +9,40 @@ import {
   } from '@nestjs/common';
   
   import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-  import { SpacesService } from './spaces.service';
+  import { TasksService } from './tasks.service';
   import { WorkspaceMemberGuard } from '../../shared/guards/workspace-member.guard';
   
   @UseGuards(JwtAuthGuard, WorkspaceMemberGuard)
   @Controller()
-  export class SpacesController {
+  export class TasksController {
   
-    constructor(private readonly spacesService: SpacesService) {}
+    constructor(private readonly tasksService: TasksService) {}
   
-    @Post('workspaces/:workspaceId/spaces')
+    @Post('workspaces/:workspaceId/tasks')
     create(
       @Param('workspaceId') workspaceId: string,
       @Body() body: {
-        name: string;
+        listId: string;
+        title: string;
+        description?: string;
         position?: number;
       }
     ) {
-      return this.spacesService.createSpace({
+      return this.tasksService.createTask({
         ...body,
         workspaceId
       });
     }
   
-    @Get('workspaces/:workspaceId/spaces')
+    @Get('workspaces/:workspaceId/tasks')
     list(
-      @Param('workspaceId') workspaceId: string
+      @Param('workspaceId') workspaceId: string,
+      @Query('listId') listId: string
     ) {
-      return this.spacesService.listSpaces(workspaceId);
+      return this.tasksService.listTasks({
+        workspaceId,
+        listId
+      });
     }
   
   }

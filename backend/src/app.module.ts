@@ -4,8 +4,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import { SpacesModule } from './modules/spaces/spaces.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { ListsModule } from './modules/lists/lists.module';
+import { TasksModule } from './modules/tasks/tasks.module';
 
 @Module({
-  imports: [AuthModule, WorkspacesModule, SpacesModule, ProjectsModule, ListsModule]
+  imports: [AuthModule, WorkspacesModule, SpacesModule, ProjectsModule, ListsModule, TasksModule]
 })
 export class AppModule {}
