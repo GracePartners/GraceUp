@@ -44,5 +44,23 @@ import {
         listId
       });
     }
+
+    // Move task between lists (drag & drop)
+    @Post('workspaces/:workspaceId/tasks/move')
+    move(
+    @Param('workspaceId') workspaceId: string,
+    @Body() body: {
+        taskId: string;
+        targetListId: string;
+        position: number;
+    }
+    ) {
+    return this.tasksService.moveTask({
+        workspaceId,
+        taskId: body.taskId,
+        targetListId: body.targetListId,
+        position: body.position
+    });
+    }
   
   }

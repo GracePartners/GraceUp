@@ -1,10 +1,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from '../../shared/database/database.service';
+import { RedisService } from '../../shared/redis/redis.service';
 
 @Injectable()
 export class ListsService {
 
-  constructor(private readonly database: DatabaseService) {}
+    constructor(
+        private readonly database: DatabaseService,
+        private readonly redis: RedisService
+      ) {}
 
   async createList(data: {
     workspaceId: string;
@@ -62,6 +66,48 @@ export class ListsService {
       [workspaceId, projectId]
     );
 
+    return result.rows;
+  }
+
+  async getBoard(data: {
+    workspaceId: string;
+    projectId: string;
+  }) {
+  
+    const cacheKey = `board:${data.workspaceId}:${data.projectId}`;
+  
+    const cached = await this.redis.get(cacheKey);
+  
+    if (cached) {
+      return cached;
+    }
+  
+    const result = await this.database.query(
+      `
+      SELECT
+        l.id as list_id,
+        l.name as list_name,
+        l.position as list_position,
+        t.id as task_id,
+        t.title as task_title,
+        t.description as task_description,
+        t.position as task_position
+      FROM lists l
+      LEFT JOIN tasks t
+        ON t.list_id = l.id
+        AND t.deleted_at IS NULL
+      WHERE l.workspace_id = $1
+      AND l.project_id = $2
+      AND l.deleted_at IS NULL
+      ORDER BY
+        l.position ASC,
+        t.position ASC
+      `,
+      [data.workspaceId, data.projectId]
+    );
+  
+    await this.redis.set(cacheKey, result.rows, 60);
+  
     return result.rows;
   }
 

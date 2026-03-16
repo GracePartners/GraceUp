@@ -40,5 +40,16 @@ import {
     ) {
       return this.listsService.listLists(workspaceId, projectId);
     }
+
+    @Get('workspaces/:workspaceId/board')
+    getBoard(
+    @Param('workspaceId') workspaceId: string,
+    @Query('projectId') projectId: string
+    ) {
+    return this.listsService.getBoard({
+        workspaceId,
+        projectId
+    });
+    }
   
   }

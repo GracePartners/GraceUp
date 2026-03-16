@@ -1,10 +1,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from '../../shared/database/database.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TasksService {
 
-  constructor(private readonly database: DatabaseService) {}
+  constructor(
+    private readonly database: DatabaseService,
+    private readonly eventEmitter: EventEmitter2
+  ) {}
 
   async createTask(data: {
     workspaceId: string;
@@ -86,6 +90,55 @@ export class TasksService {
     );
 
     return result.rows;
+  }
+
+  async moveTask(data: {
+    workspaceId: string;
+    taskId: string;
+    targetListId: string;
+    position: number;
+  }) {
+  
+    const { workspaceId, taskId, targetListId, position } = data;
+  
+    const result = await this.database.query(
+      `
+      UPDATE tasks
+      SET
+        list_id = $1,
+        position = $2,
+        updated_at = NOW()
+      WHERE id = $3
+      AND workspace_id = $4
+      AND deleted_at IS NULL
+      RETURNING
+        id,
+        workspace_id,
+        list_id,
+        title,
+        position,
+        updated_at
+      `,
+      [
+        targetListId,
+        position,
+        taskId,
+        workspaceId
+      ]
+    );
+
+    const task = result.rows[0];
+
+    if (task) {
+      this.eventEmitter.emit('task.moved', {
+        taskId: task.id,
+        workspaceId: task.workspace_id,
+        listId: task.list_id,
+        position: task.position
+      });
+    }
+  
+    return task;
   }
 
 }

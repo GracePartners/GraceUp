@@ -2,10 +2,14 @@ import { Module } from '@nestjs/common';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 import { DatabaseModule } from '../../shared/database/database.module';
+import { RealtimeModule } from '../realtime/realtime.module';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [
+    DatabaseModule,
+    RealtimeModule
+  ],
   controllers: [TasksController],
-  providers: [TasksService],
+  providers: [TasksService]
 })
 export class TasksModule {}

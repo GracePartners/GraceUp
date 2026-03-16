@@ -114,4 +114,22 @@ CREATE TRIGGER trg_notification_preferences_set_updated_at
   FOR EACH ROW
   EXECUTE FUNCTION set_updated_at();
 
+CREATE TABLE IF NOT EXISTS activity_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  event_type TEXT NOT NULL,
+  entity_type TEXT NOT NULL,
+  entity_id UUID,
+  message TEXT NOT NULL,
+  metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_activity_logs_workspace_id
+  ON activity_logs(workspace_id);
+
+CREATE INDEX IF NOT EXISTS idx_activity_logs_created_at
+  ON activity_logs(created_at DESC);
+
 COMMIT;
